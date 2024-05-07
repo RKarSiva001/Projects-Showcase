@@ -1,6 +1,6 @@
 import {Component} from 'react'
 import Loader from 'react-loader-spinner'
-import CategoryItem from '../CategoryItem'
+// import CategoryItem from '../CategoryItem'
 import ProjectItem from '../ProjectItem'
 
 import './index.css'
@@ -33,6 +33,7 @@ class ProjectsShowcase extends Component {
 
   getProjects = async () => {
     const {category} = this.state
+    console.log(category)
     this.setState({
       apiStatus: apiStatusConstants.inProgress,
     })
@@ -60,10 +61,36 @@ class ProjectsShowcase extends Component {
     }
   }
 
-  clickCategoryItem = categoryType => {
-    this.setState({category: categoryType})
+  onChangeCategory = event => {
+    const {category} = this.state
+    this.setState({category: event.target.value}, this.getProjects)
+
+    this.getProjects()
+    console.log(category, 'onChan')
+  }
+
+  clickRetry = () => {
     this.getProjects()
   }
+
+  renderProjectsFailureView = () => (
+    <div className="projects-error-view-container">
+      <img
+        src="https://assets.ccbp.in/frontend/react-js/projects-showcase/failure-img.png"
+        alt="failure view"
+        className="projects-failure-img"
+      />
+      <h1 className="projects-failure-heading-text">
+        Oops! Something Went Wrong
+      </h1>
+      <p className="projects-failure-description">
+        We cannot seem to find the page you are looking for
+      </p>
+      <button type="button" onClick={this.clickRetry}>
+        Retry
+      </button>
+    </div>
+  )
 
   renderLoadingView = () => (
     <div data-testid="loader" className="projects-loader-container">
@@ -74,7 +101,7 @@ class ProjectsShowcase extends Component {
   renderProjectsSuccessView() {
     const {category, projectsList} = this.state
 
-    // console.log(category)
+    console.log(category, 'rend success')
 
     return (
       <div className="app-container">
@@ -83,16 +110,23 @@ class ProjectsShowcase extends Component {
           alt="website logo"
         />
 
-        <ul className="tabs-container">
-          {categoriesList.map(tabDetails => (
-            <CategoryItem
-              key={tabDetails.id}
-              tabDetails={tabDetails}
-              clickCategoryItem={this.clickCategoryItem}
-              isActive={category === tabDetails.id}
-            />
-          ))}
-        </ul>
+        <div className="tabs-container">
+          <select
+            className="category-select"
+            onChange={this.onChangeCategory}
+            value={category}
+          >
+            {categoriesList.map(tabDetails => (
+              <option
+                key={tabDetails.id}
+                value={tabDetails.id}
+                className="option"
+              >
+                {tabDetails.displayText}
+              </option>
+            ))}
+          </select>
+        </div>
 
         <ul className="project-list-container">
           {projectsList.map(projectDetails => (
@@ -108,6 +142,7 @@ class ProjectsShowcase extends Component {
 
   render = () => {
     const {apiStatus} = this.state
+
     switch (apiStatus) {
       case apiStatusConstants.success:
         return this.renderProjectsSuccessView()

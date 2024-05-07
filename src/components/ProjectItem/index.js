@@ -9,7 +9,7 @@ const ProjectItem = props => {
       <li className="project-item-container">
         <img className="project-item-image" src={imageUrl} alt={name} />
         <div className="project-item-details-container">
-          <h1 className="project-item-title">{name}</h1>
+          <p className="project-item-title">{name}</p>
         </div>
       </li>
     </>
