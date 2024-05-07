@@ -31,10 +31,6 @@ class ProjectsShowcase extends Component {
     this.getProjects()
   }
 
-  clickCategoryItem = categoryType => {
-    this.setState({category: categoryType})
-  }
-
   getProjects = async () => {
     const {category} = this.state
     this.setState({
@@ -56,16 +52,21 @@ class ProjectsShowcase extends Component {
         projectsList: updatedData,
         apiStatus: apiStatusConstants.success,
       })
-    }
-    if (response.status === 401) {
+    } else {
+      // if (response.status === 401) {
       this.setState({
         apiStatus: apiStatusConstants.failure,
       })
     }
   }
 
+  clickCategoryItem = categoryType => {
+    this.setState({category: categoryType})
+    this.getProjects()
+  }
+
   renderLoadingView = () => (
-    <div className="products-loader-container">
+    <div data-testid="loader" className="projects-loader-container">
       <Loader type="ThreeDots" color="#0b69ff" height="50" width="50" />
     </div>
   )
@@ -73,7 +74,7 @@ class ProjectsShowcase extends Component {
   renderProjectsSuccessView() {
     const {category, projectsList} = this.state
 
-    console.log(category)
+    // console.log(category)
 
     return (
       <div className="app-container">
